@@ -9,13 +9,19 @@ import { fetchAPI } from "../../lib/api";
 import { getStrapiMedia } from "../../lib/media";
 
 const Article = ({ article, categories }) => {
-  const imageUrl = getStrapiMedia(article.attributes?.cover?.data?.url);
+  if (!article) return null
+
+  const imageUrl = getStrapiMedia(article.attributes?.cover);
+
   const seo = {
     metaTitle: article.attributes.title,
     metaDescription: article.attributes.description,
     shareImage: article.attributes.cover.data.url,
     article: true,
   };
+
+  const authorImage = article.attributes.author.data.attributes.avatar
+  const blocks = article?.attributes?.blocks
 
   return (
     <Layout categories={categories.data}>
@@ -31,22 +37,30 @@ const Article = ({ article, categories }) => {
       </div>
       <div className="uk-section">
         <div className="uk-container uk-container-small">
-          <ReactMarkdown>{article.attributes.content}</ReactMarkdown>
+          {blocks.map((block) => {
+            if (!block) return null
+
+            if (block.__component === 'shared.rich-text') {
+              return <ReactMarkdown key={block.id}>{block.body}</ReactMarkdown>
+            }
+
+            return null
+          })}
           <hr className="uk-divider-small" />
           <div className="uk-grid-small uk-flex-left" data-uk-grid="true">
-            <div>
-              {article.attributes.author.data.attributes.picture && (
-                <image
-                  src={article.attributes.author.data.attributes.picture}
+            <div style={{
+              height: '150px',
+              width: '150px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              paddingLeft: '0px'
+            }}>
+              {authorImage && (
+                <NextImage
+                  image={authorImage}
                   alt={
-                    article.attributes.author.data.attributes.picture.data
-                      .attributes.alternativeText
+                    authorImage.alternativeText
                   }
-                  style={{
-                    position: "static",
-                    borderRadius: "20%",
-                    height: 60,
-                  }}
                 />
               )}
             </div>
@@ -69,12 +83,14 @@ const Article = ({ article, categories }) => {
 
 export async function getStaticPaths() {
   const articlesRes = await fetchAPI("/articles", { fields: ["slug"] });
+  const paths = articlesRes.data.map((article) => ({
+    params: {
+      slug: article.attributes.slug,
+    },
+  }))
+  
   return {
-    paths: articlesRes.data.map((article) => ({
-      params: {
-        slug: article.attributes.slug,
-      },
-    })),
+    paths,
     fallback: false,
   };
 }
@@ -84,7 +100,7 @@ export async function getStaticProps({ params }) {
     filters: {
       slug: params.slug,
     },
-    populate: ["image", "category", "author.picture", "cover"],
+    populate: ["image", "category", "author.avatar", "cover", "blocks"],
   });
   const categoriesRes = await fetchAPI("/categories");
   return {

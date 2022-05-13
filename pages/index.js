@@ -22,12 +22,7 @@ export async function getStaticProps() {
   // Run API calls in parallel
   const articlesRes = await fetchAPI("/articles", { populate: ["cover", "category"] })
   const categoriesRes = await fetchAPI("/categories", { populate: "*" })
-  const homepageRes = await fetchAPI("/homepage", {
-    populate: {
-      hero: "*",
-      seo: { populate: "*" },
-    },
-  })
+  const homepageRes = await fetchAPI("/homepage")
 
   return {
     props: {
