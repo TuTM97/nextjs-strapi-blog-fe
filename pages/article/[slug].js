@@ -26,7 +26,7 @@ const Article = ({ article, categories }) => {
   return (
     <Layout categories={categories.data}>
       <Seo seo={seo} />
-      <div
+      {/* <div
         id="banner"
         className="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light uk-padding uk-margin"
         data-src={imageUrl}
@@ -34,7 +34,9 @@ const Article = ({ article, categories }) => {
         data-uk-img
       >
         <h1>{article.attributes.title}</h1>
-      </div>
+      </div> */}
+      <NextImage image={article.attributes.cover}></NextImage>
+      <h1 className="uk-text-center">{article.attributes.title}</h1>
       <div className="uk-section">
         <div className="uk-container uk-container-small">
           {blocks.map((block) => {
@@ -88,7 +90,7 @@ export async function getStaticPaths() {
       slug: article.attributes.slug,
     },
   }))
-  
+
   return {
     paths,
     fallback: false,
