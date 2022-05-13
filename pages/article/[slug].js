@@ -26,15 +26,6 @@ const Article = ({ article, categories }) => {
   return (
     <Layout categories={categories.data}>
       <Seo seo={seo} />
-      {/* <div
-        id="banner"
-        className="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light uk-padding uk-margin"
-        data-src={imageUrl}
-        data-srcset={imageUrl}
-        data-uk-img
-      >
-        <h1>{article.attributes.title}</h1>
-      </div> */}
       <NextImage image={article.attributes.cover}></NextImage>
       <h1 className="uk-text-center">{article.attributes.title}</h1>
       <div className="uk-section">
