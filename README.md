@@ -2,7 +2,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 
 ### `Environment`
-Copy and clone .env.example file in the repository and rename it as .env.local if you wish to run locally
+Copy and clone .env.example file in the repository and rename it as .env.local 
+If you wish to run locally, modify NEXT_PUBLIC_STRAPI_API_URL to your local started BE server
 
 ## Getting Started
 
